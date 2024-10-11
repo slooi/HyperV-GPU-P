@@ -11,11 +11,14 @@ try {
 		-AutomaticStopAction ShutDown `
 		-CheckpointType Disabled
     
+	$CPUManufacturer = Get-CimInstance -ClassName Win32_Processor | Foreach-Object Manufacturer
+	$BuildVer = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
 	if (($BuildVer.CurrentBuild -lt 22000) -and ($CPUManufacturer -eq "AuthenticAMD")) {}
 	Else {
 		Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $true
 	}
 	Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $false 
+	Set-VMVideo -VMName $VMName -HorizontalResolution 1920 -VerticalResolution 1080
 
 	Set-VMHost -ComputerName $ENV:Computername -EnableEnhancedSessionMode $false
 
